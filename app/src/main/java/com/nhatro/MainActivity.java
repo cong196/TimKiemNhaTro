@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
 
         /////////////
-
+         // Test
         bottomNavigation.setBehaviorTranslationEnabled(false);
         bottomNavigation.setForceTint(true);
 
