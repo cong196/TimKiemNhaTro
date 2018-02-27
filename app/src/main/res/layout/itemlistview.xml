@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/layoutParentItem"
+    android:background="@drawable/border_item_listview"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingHorizontal="5dp"
+    android:paddingLeft="10dp"
+    android:paddingBottom="2dp">
+
+    <ImageView
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/imageItemListView"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/imgtemp" />
+    <TextView
+        android:id="@+id/type"
+        android:textSize="12sp"
+        android:padding="3dp"
+        android:textColor="@color/white"
+        android:text="Tìm bạn ở ghép"
+        android:background="@color/colorPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        app:layout_constraintStart_toEndOf="@id/type"
+        android:id="@+id/sex"
+        android:textSize="12sp"
+        android:padding="3dp"
+        android:textColor="@color/white"
+        android:text="Nữ"
+        android:background="@color/colorAccent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <ImageView
+        android:padding="4dp"
+        android:paddingRight="10dp"
+        app:layout_constraintEnd_toEndOf="@id/imageItemListView"
+        android:id="@+id/islike"
+        android:src="@drawable/heart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/txtUSD"
+        android:textStyle="bold"
+        android:textSize="14dp"
+        app:layout_constraintBottom_toBottomOf="@id/imageItemListView"
+        android:textColor="@color/white"
+        android:text="@string/us"
+        android:background="@color/transparenttt"
+        android:padding="3dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_marginLeft="14dp"
+        app:layout_constraintStart_toEndOf="@id/txtUSD"
+        android:id="@+id/txtPrice"
+        android:textStyle="bold"
+        android:textSize="14dp"
+        app:layout_constraintBottom_toBottomOf="@id/imageItemListView"
+        android:textColor="@color/white"
+        android:text="1,200,000 vnđ"
+        android:background="@color/transparenttt"
+        android:padding="3dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:paddingLeft="5dp"
+        android:paddingTop="3dp"
+        app:layout_constraintTop_toBottomOf="@id/imageItemListView"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textSize="12sp"
+        android:id="@+id/txtTitle"
+        android:textStyle="bold"
+        android:text="Phòng trọ hồ chí minh quận 9 99s d98fsd9f 89324923 9238432 asd2 3e 23 "
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:paddingLeft="5dp"
+        android:id="@+id/marker"
+        android:paddingRight="2dp"
+        app:layout_constraintBottom_toBottomOf="@id/txtAddress"
+        android:src="@drawable/marker"
+        android:layout_width="15dp"
+        android:layout_height="15dp" />
+    <TextView
+        app:layout_constraintStart_toEndOf="@id/marker"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="10sp"
+        android:id="@+id/txtAddress"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="78/12 Làng Tăng Phú, Phường Tăng Nhơn Phú A, Quận 9 Thành Phố Hồ Chí Minh, TPHCM"
+        app:layout_constraintTop_toBottomOf="@id/txtTitle" />
+
+    <ImageView
+        app:layout_constraintTop_toTopOf="@id/area"
+        android:src="@drawable/dientich"
+        android:paddingRight="2dp"
+        android:paddingLeft="5dp"
+        android:id="@+id/icondientich"
+        android:layout_width="15dp"
+        android:layout_height="15dp" />
+    <TextView
+        app:layout_constraintStart_toEndOf="@id/icondientich"
+        android:paddingBottom="10dp"
+        android:textSize="10sp"
+        app:layout_constraintTop_toBottomOf="@id/txtAddress"
+        android:id="@+id/area"
+        android:text="Diện tích: 30m2 (4.5m x 8m)"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+
+
+</android.support.constraint.ConstraintLayout>

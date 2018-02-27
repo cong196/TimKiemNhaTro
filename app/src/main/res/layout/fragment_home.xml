@@ -1,13 +1,91 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.nhatro.HomeFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:id="@+id/layout1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        android:background="@color/gray"
+        >
+        <LinearLayout
+            android:background="@drawable/background_filter_map_sort"
+            android:paddingVertical="5dp"
+            android:gravity="center"
+            android:id="@+id/btnSapXep"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_marginRight="5dp"
+                android:layout_width="20sp"
+                android:layout_height="20sp"
+                android:src="@drawable/sort"
+                />
+            <TextView
+                android:textColor="@color/white"
+                android:text="Sắp xếp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
-</FrameLayout>
+        <LinearLayout
+            android:background="@drawable/background_filter_map_sort"
+            android:paddingVertical="5dp"
+            android:gravity="center"
+            android:id="@+id/btnBoLoc"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_marginRight="5dp"
+                android:layout_width="20sp"
+                android:layout_height="20sp"
+                android:src="@drawable/filter"
+                />
+            <TextView
+                android:textColor="@color/white"
+                android:text="Bộ lọc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:clickable="true"
+            android:background="@drawable/background_filter_map_sort"
+            android:paddingVertical="5dp"
+            android:gravity="center"
+            android:id="@+id/btnMap"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/imgBanDo"
+                android:layout_marginRight="5dp"
+                android:layout_width="20sp"
+                android:layout_height="20sp"
+                android:src="@drawable/map"
+                />
+            <TextView
+                android:id="@+id/txtCheDoXem"
+                android:textColor="@color/white"
+                android:text="Bản đồ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </LinearLayout>
+    <FrameLayout
+        android:id="@+id/framDanhSach"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></FrameLayout>
+
+</LinearLayout>

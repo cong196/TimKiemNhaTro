@@ -4,11 +4,17 @@ import android.graphics.Color;
 import android.support.annotation.ColorRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
@@ -25,16 +31,34 @@ public class MainActivity extends AppCompatActivity {
     NotifyFragment notifyFragment = new NotifyFragment();
     PostFragment postFragment = new PostFragment();
     AccountFragment accountFragment = new AccountFragment();
+    tim_o_ghep tim_o_ghep = new tim_o_ghep();
     Fragment active = homeFragment;
     private int t1, t2, t3 = 0;
+
+    @Override
+    public void onBackPressed() {
+        if(active != homeFragment) {
+            bottomNavigation.setCurrentItem(0, false);
+            fragmentManager.beginTransaction().hide(active).show(homeFragment).commit();
+            active = homeFragment;
+        } else {
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(1);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
+        ActionBar actionBar =getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setLogo(R.drawable.home);
+        actionBar.setDisplayUseLogoEnabled(true);
+        //actionBar.hide();
 
+        bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
         /////////////
          // Test
         bottomNavigation.setBehaviorTranslationEnabled(false);
@@ -46,10 +70,10 @@ public class MainActivity extends AppCompatActivity {
         //////////
 
 
-        final AHBottomNavigationItem item1 = new AHBottomNavigationItem("Home", R.drawable.home);
+        final AHBottomNavigationItem item1 = new AHBottomNavigationItem("Tìm phòng", R.drawable.home);
         bottomNavigation.addItem(item1);
 
-        AHBottomNavigationItem item2 = new AHBottomNavigationItem("Đăng tin", R.drawable.news);
+        AHBottomNavigationItem item2 = new AHBottomNavigationItem("Tìm ở ghép", R.drawable.news);
         bottomNavigation.addItem(item2);
 
         AHBottomNavigationItem item3 = new AHBottomNavigationItem("Thông báo", R.drawable.notify);
@@ -62,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.setNotification("5", 2);
 
         // Change colors
-        bottomNavigation.setAccentColor(Color.parseColor("#F63D2B"));
+        bottomNavigation.setAccentColor(Color.parseColor("#1594E9"));
         bottomNavigation.setInactiveColor(Color.parseColor("#747474"));
         bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
             @Override
@@ -79,18 +103,18 @@ public class MainActivity extends AppCompatActivity {
                         bottomNavigation.setCurrentItem(1, false);
                         if (t1 == 1) { // Đã add Fragment post
                             // Nếu post fragment không phải đang active
-                            if (active != postFragment) {
-                                fragmentManager.beginTransaction().hide(active).show(postFragment).commit();
+                            if (active != tim_o_ghep) {
+                                fragmentManager.beginTransaction().hide(active).show(tim_o_ghep).commit();
                                 //Set active là post Fragment
-                                active = postFragment;
+                                active = tim_o_ghep;
                             }
                             //active = postFragment;
                         } else { // chưa add Fragment post
                             t1 = 1; // Set là đã add
                             // Add vào
-                            fragmentManager.beginTransaction().add(R.id.frame, postFragment).commit();
-                            fragmentManager.beginTransaction().hide(active).show(postFragment).commit();
-                            active = postFragment;
+                            fragmentManager.beginTransaction().add(R.id.frame, tim_o_ghep).commit();
+                            fragmentManager.beginTransaction().hide(active).show(tim_o_ghep).commit();
+                            active = tim_o_ghep;
                         }
                     } else {
                         if (position == 2) {
@@ -132,9 +156,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         fragmentManager.beginTransaction().add(R.id.frame, homeFragment).commit(); // Add và hiện thị fragment home khi khởi động
-    }
 
-    private int fetchColor(@ColorRes int color) {
-        return ContextCompat.getColor(this, color);
     }
 }

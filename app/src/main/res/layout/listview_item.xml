@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="5dp">
+
+    <ImageView
+        android:paddingRight="10dp"
+        android:id="@+id/imageItemListView"
+        android:layout_width="139dp"
+        android:layout_height="139dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/imgtemp"
+       />
+
+    <TextView
+        android:id="@+id/txtTitle"
+        app:layout_constraintStart_toEndOf="@id/imageItemListView"
+        app:layout_constraintTop_toTopOf="@id/imageItemListView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Phòng trọ sạch đẹpfffffffffffffffffffffffffffffffffffff1"
+        android:textSize="18dp"
+        android:maxLines="1"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txtAddress"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:paddingVertical="5dp"
+        android:text="78/12 Làng Tăng Phú, Phường Tăng Nhơn Phú A, Quận 9, TPHCM"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/txtTitle"
+        app:layout_constraintTop_toBottomOf="@id/txtTitle" />
+
+    <TextView
+        app:layout_constraintStart_toStartOf="@id/txtAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtAddress"
+        android:paddingBottom="5dp"
+        android:textStyle="bold"
+        android:text="Giá: 1.200.000 vnđ"
+        android:id="@+id/txtPrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        app:layout_constraintTop_toBottomOf="@id/txtPrice"
+        app:layout_constraintStart_toStartOf="@id/txtPrice"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textStyle="bold"
+        android:id="@+id/area"
+        android:text="Diện tích: 30m2 (4.5m x 8m)"
+        android:layout_width="0dp"
+        android:paddingBottom="5dp"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        app:layout_constraintStart_toEndOf="@id/imageItemListView"
+        app:layout_constraintTop_toBottomOf="@id/area"
+        android:text="Giới tính: Nữ"
+        android:textStyle="bold"
+        android:id="@+id/sex"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+</android.support.constraint.ConstraintLayout>

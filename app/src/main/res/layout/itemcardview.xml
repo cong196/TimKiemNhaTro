@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    app:cardUseCompatPadding="true">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/itemCardview"
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:scaleType="fitXY"
+                android:id="@+id/avatar"
+                android:layout_width="100dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_marginLeft="5dp"
+                android:padding="3dp"
+                android:id="@+id/txttype"
+                android:textColor="@color/white"
+                android:textSize="9sp"
+                android:background="@drawable/border_text_type_item_cardview"
+                app:layout_constraintStart_toEndOf="@id/avatar"
+                android:text="Phòng trọ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+            <TextView
+                android:layout_marginLeft="5dp"
+                android:padding="3dp"
+                android:id="@+id/txtSex"
+                android:textColor="@color/white"
+                android:textSize="9sp"
+                android:background="@drawable/border_text_type_item_cardview"
+                app:layout_constraintStart_toEndOf="@id/txttype"
+                android:text="Nam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+            <TextView
+                app:layout_constraintTop_toBottomOf="@id/txttype"
+                android:id="@+id/txtTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:paddingLeft="5dp"
+                android:singleLine="true"
+                android:text="Phòng trọ hồ chí minh quận 9 99s d98fsd9f 89324923 9238432 asd2 3e 23"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@id/avatar"
+                app:layout_constraintEnd_toEndOf="parent"
+                />
+
+            <ImageView
+                app:layout_constraintStart_toStartOf="@id/txtTitle"
+                android:paddingLeft="5dp"
+                android:id="@+id/marker"
+                android:paddingRight="2dp"
+                android:paddingBottom="1dp"
+                app:layout_constraintTop_toTopOf="@id/txtAddress"
+                android:src="@drawable/marker"
+                android:layout_width="15dp"
+                android:layout_height="15dp" />
+
+            <TextView
+                android:id="@+id/txtAddress"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="78/12 Làng Tăng Phú, Phường Tăng Nhơn Phú A, Quận 9 Thành Phố Hồ Chí Minh, TPHCM"
+                android:textSize="10sp"
+                app:layout_constraintStart_toEndOf="@id/marker"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txtTitle" />
+
+
+            <ImageView
+                app:layout_constraintStart_toStartOf="@id/txtTitle"
+                app:layout_constraintTop_toTopOf="@id/area"
+                android:src="@drawable/dientich"
+                android:paddingRight="2dp"
+                android:paddingLeft="5dp"
+                android:paddingBottom="1dp"
+                android:id="@+id/icondientich"
+                android:layout_width="15dp"
+                android:layout_height="15dp" />
+            <TextView
+                app:layout_constraintStart_toEndOf="@id/icondientich"
+                android:textSize="10sp"
+                app:layout_constraintTop_toBottomOf="@id/txtAddress"
+                android:id="@+id/area"
+                android:text="Diện tích: 30m2 (4.5m x 8m)"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+
+            <TextView
+                android:textStyle="bold"
+                android:paddingLeft="5dp"
+                app:layout_constraintTop_toBottomOf="@id/area"
+                app:layout_constraintStart_toEndOf="@id/avatar"
+                android:id="@+id/txtPrice"
+                android:textSize="17sp"
+                android:textColor="@color/red"
+                android:text="1.300.000 đ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </android.support.constraint.ConstraintLayout>
+
+
+
+    </FrameLayout>
+
+</android.support.v7.widget.CardView>
