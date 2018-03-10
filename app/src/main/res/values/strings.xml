@@ -11,7 +11,7 @@
     <string-array name="sapxeps">
         <item>Giá từ thấp đến cao</item>
         <item>Giá từ cao xuống thấp</item>
-        <item>Sắp xếp 111</item>
+        <item>Sắp xếp </item>
     </string-array>
     <string name="title_activity_detail_screen">DetailScreen</string>
     <string name="large_text">

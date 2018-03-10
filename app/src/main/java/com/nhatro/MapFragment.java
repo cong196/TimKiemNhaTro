@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -112,18 +113,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 //            mCardAdapter.addCardItem(new ItemOnMapView(6, "Phòng trọ 6", "Địa chỉ 6", 1550, 10.85064713, 106.97209787));
 
             mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter);
+
+            mCardAdapter.notifyDataSetChanged();
+
             mViewPager.setAdapter(mCardAdapter);
+
             mViewPager.setPageTransformer(false, mCardShadowTransformer);
             mViewPager.setOffscreenPageLimit(3);
-
             mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                 @Override
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
                 }
 
                 @Override
                 public void onPageSelected(int position) {
+
                     Marker tmp = lstMarker.get(indexSelected);
                     IconGenerator icon = new IconGenerator(getContext());
                     icon.setStyle(IconGenerator.STYLE_DEFAULT);
@@ -146,19 +150,66 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                     map.animateCamera(CameraUpdateFactory.newCameraPosition(temp));
 
                 }
-
                 @Override
                 public void onPageScrollStateChanged(int state) {
 
                 }
             });
 
-
+            //Toast.makeText(getContext()),
         }
+
+        Toast.makeText(getContext(),"Load dữ liệu",Toast.LENGTH_SHORT).show();
 
         return view;
     }
 
+    public void loadData(){
+        Toast.makeText(getContext(),"Đang Lọc DL",Toast.LENGTH_SHORT).show();
+        this.item.clear();
+        map.clear();
+        this.item.add(new ItemOnMapView(1, "Phòng trọ 1", "Địa chỉ 1", 1200000, 10.85064713, 106.77209787));
+        this.item.add(new ItemOnMapView(2, "Phòng trọ 2", "Địa chỉ 2", 1100000, 10.84986079, 106.77403353));
+        mCardAdapter = new CardMapViewAdapter(this.item);
+        mViewPager.setAdapter(mCardAdapter);
+        //mCardAdapter.notifyDataSetChanged();
+
+        lstMarker.clear();
+
+
+        for (int i = 0; i < this.item.size(); i++) {
+            LatLng temp = new LatLng(item.get(i).getLat(), item.get(i).getLng());
+
+            IconGenerator iconFactory = new IconGenerator(getContext());
+            if (i == 0) {
+                iconFactory.setStyle(IconGenerator.STYLE_BLUE);
+                //scurrentSelected = new LatLng(item.get(i).getLat(),item.get(i).getLng());
+            } else {
+                iconFactory.setStyle(IconGenerator.STYLE_DEFAULT);
+            }
+
+
+            MarkerOptions markerOptions = new MarkerOptions().
+                    icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(makeCharSequence(String.valueOf(item.get(i).getPrice()) + " vnđ")))).
+                    position(temp).
+                    anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
+
+
+            //map.addMarker(markerOptions);
+
+            Marker m = map.addMarker(markerOptions);
+            lstMarker.add(m);
+            if (i == 0) {
+                selectedMarker = lstMarker.get(0);
+                indexSelected = 0;
+            }
+        }
+
+        indexSelected = 0;
+        selectedMarker = lstMarker.get(0);
+
+
+    }
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.map = googleMap;
@@ -248,6 +299,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             map.addMarker(markerOptions);
         }
     }
+
 
     private void getLocation() {
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
