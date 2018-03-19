@@ -10,12 +10,15 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <uses-feature android:name="android.hardware.location" android:required="true" />
-    <uses-feature android:name="android.hardware.location.gps" android:required="true" />
+    <uses-feature
+        android:name="android.hardware.location"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="true" />
 
-
-
-    <permission android:name="com.nhatro.permission.MAP_RECEIVE"
+    <permission
+        android:name="com.nhatro.permission.MAP_RECEIVE"
         android:protectionLevel="signature" />
     <!-- if you want to load images from a file OR from the internet -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -29,7 +32,8 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/map_api_key"/>
+            android:value="@string/map_api_key" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,6 +47,7 @@
             android:name=".Details"
             android:label="@string/title_activity_details"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ChonTinh"></activity>
     </application>
 
 </manifest>

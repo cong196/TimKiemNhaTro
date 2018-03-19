@@ -15,9 +15,66 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            >
 
             <TextView
+                android:paddingTop="8dp"
+                android:id="@+id/lableKhuVuc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:text="KHU VỰC"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:gravity="center"
+                android:paddingLeft="5dp"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp"
+                android:background="@drawable/background_click_textview"
+                android:layout_marginRight="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:orientation="horizontal"
+                android:id="@+id/lblTinh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/txtTPHT"
+                    android:paddingRight="8dp"
+                    android:text="TP.Hồ Chí Minh"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <ImageView
+                    android:layout_gravity="center"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/icon_arrow_right"
+                    />
+            </LinearLayout>
+
+            <com.nhatro.adapter.ExpandableHeightGridView
+                android:id="@+id/gridQuan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:isScrollContainer="false"
+                android:numColumns="3"
+                android:stretchMode="columnWidth"
+                app:layout_constraintTop_toBottomOf="@id/lblTinh" />
+
+            <View
+                android:id="@+id/divider11"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintTop_toBottomOf="@id/gridQuan" />
+
+
+            <TextView
+                app:layout_constraintTop_toBottomOf="@id/divider11"
                 android:id="@+id/lableGia"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -111,9 +168,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/sliderArea2" />
 
-
-
-
             <View
                 android:id="@+id/divider1"
                 android:layout_width="match_parent"
@@ -121,28 +175,66 @@
                 android:layout_marginTop="10dp"
                 android:background="@android:color/darker_gray"
                 app:layout_constraintTop_toBottomOf="@id/maxArea" />
+
+
+
+            <TextView
+                app:layout_constraintTop_toBottomOf="@id/divider1"
+                android:id="@+id/lableSoNguoi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingTop="8dp"
+                android:text="SỐ NGƯỜI Ở"
+                android:textStyle="bold" />
+
+            <io.apptik.widget.MultiSlider
+                android:id="@+id/sliderSoNguoi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                app:drawThumbsApart="true"
+                app:layout_constraintTop_toBottomOf="@id/lableSoNguoi"
+                app:rangeColor="@color/red"
+                app:scaleMax="10"
+                app:scaleMin="1"
+                app:scaleStep="1"
+                app:stepsThumbsApart="1"
+                app:thumbColor="@color/colorPrimary"
+                app:thumbNumber="1" />
+
+            <TextView
+                android:id="@+id/txtSoNguoi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:text="1 Người"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/sliderSoNguoi" />
+
+
+            <View
+                android:id="@+id/divider10"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintTop_toBottomOf="@id/txtSoNguoi" />
+
             <TextView
                 android:id="@+id/lblGT"
-                app:layout_constraintTop_toTopOf="@id/divider1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
                 android:paddingTop="8dp"
                 android:text="LOẠI TIN TỨC"
                 android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@id/divider5" />
-            <CheckBox
-                app:layout_constraintStart_toStartOf="@id/sliderArea"
-                android:text="Tất cả"
-                app:layout_constraintTop_toBottomOf="@id/lblGT"
-                android:id="@+id/checkTatCa"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                app:layout_constraintTop_toBottomOf="@id/divider10" />
 
             <CheckBox
                 app:layout_constraintStart_toStartOf="@id/sliderArea"
                 android:text="Cho Thuê Phòng Trọ"
-                app:layout_constraintTop_toBottomOf="@id/checkTatCa"
+                app:layout_constraintTop_toBottomOf="@id/lblGT"
                 android:id="@+id/checkPhongTro"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

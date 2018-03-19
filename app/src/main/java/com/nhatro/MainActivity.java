@@ -1,6 +1,8 @@
 package com.nhatro;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.ColorRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -15,6 +17,7 @@ import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
@@ -52,10 +55,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ActionBar actionBar =getSupportActionBar();
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setLogo(R.drawable.home);
-        actionBar.setDisplayUseLogoEnabled(true);
+//        ActionBar actionBar =getSupportActionBar();
+//        actionBar.setDisplayShowHomeEnabled(true);
+//        actionBar.setLogo(R.drawable.home);
+//        actionBar.setDisplayUseLogoEnabled(true);
+
+
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.custom_layout_actionbar);
+
+
+        TextView txtLogo = findViewById(R.id.txtLogo);
+        Typeface tf = Typeface.createFromAsset(getAssets(),"fonts/font_logo.TTF");
+        txtLogo.setTypeface(tf);
         //actionBar.hide();
 
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);

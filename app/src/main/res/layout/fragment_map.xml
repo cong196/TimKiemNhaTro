@@ -1,18 +1,54 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorAccent"
     tools:context="com.nhatro.MapFragment">
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mymap"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingTop="5dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        android:background="@drawable/corner_seekbar_mapview"
+        android:layout_marginHorizontal="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/txtBanKinh"
+            android:layout_gravity="center"
+            android:textStyle="bold"
+            android:paddingBottom="5dp"
+            android:text="2 KM"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <com.warkiz.widget.IndicatorSeekBar
+            android:id="@+id/bubbleSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:isb_indicator_type="circular_bubble"
+            app:isb_progress="0"
+            app:isb_max="6"
+            app:isb_min="2"
+            app:isb_seek_bar_type="discrete_ticks_texts"
+            app:isb_tick_num="3"
+            app:isb_tick_type="oval"
+            app:isb_text_size="17dp"
+            app:isb_tick_size="10dp"
+            app:isb_track_progress_bar_size="10dp"
+            app:isb_track_background_bar_size="7dp"
+            />
+
+    </LinearLayout>
+
 
     <android.support.v4.view.ViewPager
-        app:layout_constraintBottom_toBottomOf="@id/mymap"
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="150dp"
@@ -22,6 +58,7 @@
         android:paddingEnd="@dimen/card_padding"
         android:paddingLeft="@dimen/card_padding"
         android:paddingRight="@dimen/card_padding"
-        android:paddingStart="@dimen/card_padding" />
+        android:paddingStart="@dimen/card_padding"
+        app:layout_constraintBottom_toBottomOf="@id/mymap" />
 
 </android.support.constraint.ConstraintLayout>

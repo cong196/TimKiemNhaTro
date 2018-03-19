@@ -3,6 +3,7 @@ package com.nhatro;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -14,17 +15,22 @@ import android.text.SpannableStringBuilder;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -32,6 +38,7 @@ import com.google.maps.android.ui.IconGenerator;
 import com.nhatro.adapter.CardMapViewAdapter;
 import com.nhatro.adapter.ShadowTransformer;
 import com.nhatro.model.ItemOnMapView;
+import com.warkiz.widget.IndicatorSeekBar;
 
 import java.util.ArrayList;
 
@@ -53,6 +60,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
     private Marker selectedMarker;
     private int indexSelected;
+    private int banKinh;
     private ArrayList<Marker> lstMarker;
 
     private CardMapViewAdapter mCardAdapter;
@@ -60,6 +68,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
     //    private CardFragmentPagerAdapter mFragmentCardAdapter;
 //    private ShadowTransformer mFragmentCardShadowTransformer;
     private ViewPager mViewPager;
+
+    private TextView txtBanKinh;
+    private Circle currentCircle;
+    private Marker tempMarker; // Marker xuất hiện khi di chuyển map.
+    private IndicatorSeekBar seekBarBanKinh;
+
+    private boolean isGestured; // Xác định có phải là người di chuyển map để di chuyển circle
 
     public MapFragment() {
         // Required empty public constructor
@@ -73,6 +88,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
         if (view == null) {
             view = inflater.inflate(R.layout.fragment_map, container, false);
+            banKinh = 2;
+            isGestured = false;
+
+            txtBanKinh = (TextView) view.findViewById(R.id.txtBanKinh);
+            seekBarBanKinh = (IndicatorSeekBar) view.findViewById(R.id.bubbleSeekBar);
+
             mapView = (MapView) view.findViewById(R.id.mymap);
             mapView.onCreate(savedInstanceState);
             mapView.onResume();
@@ -89,8 +110,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             this.item.add(new ItemOnMapView(6, "Phòng trọ 6", "Địa chỉ 6", 1800000, 10.84484839, 106.77485678));
 
             mViewPager = (ViewPager) view.findViewById(R.id.viewPager);
-
-
             mCardAdapter = new CardMapViewAdapter(this.item);
 
 //            mCardAdapter.addCardItem(new ItemOnMapView(1, "Phòng trọ 1", "Địa chỉ 1", 1555, 10.85064713, 106.77209787));
@@ -115,7 +134,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter);
 
             mCardAdapter.notifyDataSetChanged();
-
             mViewPager.setAdapter(mCardAdapter);
 
             mViewPager.setPageTransformer(false, mCardShadowTransformer);
@@ -132,8 +150,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                     IconGenerator icon = new IconGenerator(getContext());
                     icon.setStyle(IconGenerator.STYLE_DEFAULT);
                     tmp.setIcon(BitmapDescriptorFactory.fromBitmap(icon.makeIcon(makeCharSequence(String.valueOf(item.get(indexSelected).getPrice()) + " vnđ"))));
-
-
                     indexSelected = position;
                     selectedMarker = lstMarker.get(position);
 
@@ -141,8 +157,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                     IconGenerator icon2 = new IconGenerator(getContext());
                     icon2.setStyle(IconGenerator.STYLE_BLUE);
                     tmp2.setIcon(BitmapDescriptorFactory.fromBitmap(icon2.makeIcon(makeCharSequence(String.valueOf(item.get(indexSelected).getPrice()) + " vnđ"))));
-
-
                     CameraPosition temp = new CameraPosition.Builder()
                             .target(new LatLng(mCardAdapter.getItem(position).getLat(), mCardAdapter.getItem(position).getLng()))      // Sets the center of the map to location user
                             .zoom(14)                   // Sets the zoom
@@ -150,8 +164,41 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                     map.animateCamera(CameraUpdateFactory.newCameraPosition(temp));
 
                 }
+
                 @Override
                 public void onPageScrollStateChanged(int state) {
+
+                }
+            });
+
+            seekBarBanKinh.setOnSeekChangeListener(new IndicatorSeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(IndicatorSeekBar seekBar, int progress, float progressFloat, boolean fromUserTouch) {
+
+                }
+
+                @Override
+                public void onSectionChanged(IndicatorSeekBar seekBar, int thumbPosOnTick, String textBelowTick, boolean fromUserTouch) {
+
+                   /* if (isGestured == true) {*/
+                    txtBanKinh.setText(String.valueOf(Math.round(seekBarBanKinh.getProgressFloat())) + " KM");
+                    banKinh = Integer.parseInt(String.valueOf(Math.round(seekBarBanKinh.getProgressFloat())));
+
+
+                    //currentCircle.setRadius(banKinh);
+                    currentCircle.remove();
+                    drawCircle(new LatLng(map.getCameraPosition().target.latitude, map.getCameraPosition().target.longitude), banKinh);
+                    /*}*/
+
+                }
+
+                @Override
+                public void onStartTrackingTouch(IndicatorSeekBar seekBar, int thumbPosOnTick) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(IndicatorSeekBar seekBar) {
 
                 }
             });
@@ -159,13 +206,29 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             //Toast.makeText(getContext()),
         }
 
-        Toast.makeText(getContext(),"Load dữ liệu",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Load dữ liệu", Toast.LENGTH_SHORT).show();
+
 
         return view;
     }
 
-    public void loadData(){
-        Toast.makeText(getContext(),"Đang Lọc DL",Toast.LENGTH_SHORT).show();
+    private void drawCircle(LatLng point, int banKinh) {
+
+        CircleOptions circleOptions = new CircleOptions();
+        circleOptions.center(point);
+        circleOptions.radius(banKinh * 1000);
+        circleOptions.strokeColor(Color.BLACK);
+        // Fill color of the circle
+        circleOptions.fillColor(0x30ff0000);
+
+        // Border width of the circle
+        circleOptions.strokeWidth(2);
+        // Adding the circle to the GoogleMap
+        currentCircle = map.addCircle(circleOptions);
+    }
+
+    public void loadData() {
+        Toast.makeText(getContext(), "Đang Lọc DL", Toast.LENGTH_SHORT).show();
         this.item.clear();
         map.clear();
         this.item.add(new ItemOnMapView(1, "Phòng trọ 1", "Địa chỉ 1", 1200000, 10.85064713, 106.77209787));
@@ -188,12 +251,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                 iconFactory.setStyle(IconGenerator.STYLE_DEFAULT);
             }
 
-
             MarkerOptions markerOptions = new MarkerOptions().
                     icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(makeCharSequence(String.valueOf(item.get(i).getPrice()) + " vnđ")))).
                     position(temp).
                     anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
-
 
             //map.addMarker(markerOptions);
 
@@ -207,12 +268,84 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
         indexSelected = 0;
         selectedMarker = lstMarker.get(0);
-
-
     }
+
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.map = googleMap;
+
+        map.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
+            @Override
+            public void onCameraMove() {
+
+                if (isGestured) {
+                    if (tempMarker != null) {
+                        //tempMarker.remove();
+                        tempMarker.setVisible(true);
+                        tempMarker.setPosition(new LatLng(map.getCameraPosition().target.latitude, map.getCameraPosition().target.longitude));
+                    } else {
+                        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ball_marker);
+                        LatLng latLng = new LatLng(map.getCameraPosition().target.latitude, map.getCameraPosition().target.longitude);
+                        MarkerOptions markerOptions = new MarkerOptions().position(latLng)
+                                .icon(icon);
+
+                        tempMarker = map.addMarker(markerOptions);
+                    }
+                }
+
+
+            }
+        });
+
+        map.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
+            @Override
+            public void onCameraMoveStarted(int i) {
+                if (i == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
+                    isGestured = true;
+                    //Toast.makeText(getContext(), "USER TÁC ĐỘNG LÊN MAP.", Toast.LENGTH_SHORT).show();
+                } else if (i == GoogleMap.OnCameraMoveStartedListener.REASON_API_ANIMATION) {
+                    //Toast.makeText(getContext(), "The user tapped something on the map.",Toast.LENGTH_SHORT).show();
+                } else if (i == GoogleMap.OnCameraMoveStartedListener.REASON_DEVELOPER_ANIMATION) {
+                    //Toast.makeText(getContext(), "APP TỰ TÁC ĐỘNG LÊN MAP", Toast.LENGTH_SHORT).show();
+                    isGestured = false;
+                }
+            }
+        });
+
+        map.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+            @Override
+            public void onCameraIdle() {
+
+                if (isGestured) {
+                    if (currentCircle != null) {
+                        currentCircle.setCenter(new LatLng(map.getCameraPosition().target.latitude, map.getCameraPosition().target.longitude));
+                    } else {
+                        // Instantiating CircleOptions to draw a circle around the marker
+                        CircleOptions circleOptions = new CircleOptions();
+                        // Specifying the center of the circle
+                        circleOptions.center(new LatLng(map.getCameraPosition().target.latitude, map.getCameraPosition().target.longitude));
+                        // Radius of the circle
+                        circleOptions.radius(1000);
+                        // Border color of the circle
+                        circleOptions.strokeColor(Color.BLACK);
+                        // Fill color of the circle
+                        circleOptions.fillColor(0x30ff0000);
+                        // Border width of the circle
+                        circleOptions.strokeWidth(2);
+                        // Adding the circle to the GoogleMap
+                        currentCircle = map.addCircle(circleOptions);
+                    }
+                    //currentCircle.remove();
+
+
+                    tempMarker.setVisible(false);
+                } else {
+
+                }
+            }
+        });
+
 
         getLocation();
 
@@ -278,6 +411,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                 .zoom(14)                   // Sets the zoom
                 .build();                   // Creates a CameraPosition from the builder
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+
+        drawCircle(new LatLng(10.85064713, 106.77209787), banKinh);
+
     }
 
     public void renderMarker(int position) {
@@ -340,7 +477,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
     private CharSequence makeCharSequence(String str) {
         SpannableStringBuilder ssb = new SpannableStringBuilder(str);
-        ssb.setSpan(new RelativeSizeSpan(0.8f), 0, str.length(), 0);
+        ssb.setSpan(new RelativeSizeSpan(0.6f), 0, str.length(), 0);
         ssb.setSpan(new StyleSpan(BOLD), 0, str.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         return ssb;
     }

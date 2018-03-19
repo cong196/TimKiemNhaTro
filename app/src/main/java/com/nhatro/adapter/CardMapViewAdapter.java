@@ -82,7 +82,6 @@ public class CardMapViewAdapter extends PagerAdapter implements CardAdapter {
         if (mBaseElevation == 0) {
             mBaseElevation = cardView.getCardElevation();
         }
-
         cardView.setMaxCardElevation(mBaseElevation * MAX_ELEVATION_FACTOR);
         mViews.set(position, cardView);
 
@@ -109,9 +108,13 @@ public class CardMapViewAdapter extends PagerAdapter implements CardAdapter {
 
     private void bind(ItemOnMapView item, View view) {
         TextView titleTextView = (TextView) view.findViewById(R.id.txtTitle);
-        TextView price = (TextView) view.findViewById(R.id.txtAddress);
+        TextView address = (TextView) view.findViewById(R.id.txtAddress);
         ImageView avatar = (ImageView) view.findViewById(R.id.avatar);
+        TextView price = (TextView) view.findViewById(R.id.txtPrice);
 
+        titleTextView.setText(item.getTitle());
+        address.setText(item.getAddress());
+        price.setText(String.valueOf(Math.round(item.getPrice())) + " VNĐ");
 
 
         Picasso.with(view.getContext()).load("https://i-thethao.vnecdn.net/2018/02/27/Untitled-1531-1519693943_500x300.jpg").into(avatar);

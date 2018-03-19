@@ -12,8 +12,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -21,10 +24,16 @@ import android.widget.Toast;
 
 import com.nhatro.adapter.ExpandableHeightGridView;
 import com.nhatro.adapter.Grid_Facilities_Adapter;
+import com.nhatro.adapter.Grid_Quan_Huyen_Adapter;
 import com.nhatro.model.Item_Grid_Facilities;
+import com.nhatro.model.QuanHuyen;
+import com.nhatro.sqlite.SQLiteDataController;
+import com.nhatro.sqlite.SQLite_QuanHuyen;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import info.hoang8f.android.segmented.SegmentedGroup;
 import io.apptik.widget.MultiSlider;
@@ -38,17 +47,31 @@ public class Filter extends AppCompatActivity {
 
     private int minArea = 0;
     private int maxArea = 200;
+    private int soNguoiO = 1;
+    private int tinhTP;
 
     GridView gridFacilities;
     ArrayList<Item_Grid_Facilities> lstFacilities = new ArrayList<>();
+    ArrayList<QuanHuyen> listQuanHuyen = new ArrayList<>();
+
+    ArrayList<Integer> lstChonQuanHuyen;
 
     boolean[] selectedFacitilies;
     boolean sex;
 
+    String tenTP = "";
+    ExpandableHeightGridView gridQuanHuyen;
+    Grid_Quan_Huyen_Adapter grid_quan_huyen_adapter;
 
-    TextView btnOK, btnCancel;
+    TextView btnOK, btnCancel, txtTPHT;
     RadioButton radNam, radNu;
     SegmentedGroup radGroup;
+    CheckBox checkNhaTro, checkNhaNguyenCan, checkTimOGhep;
+    LinearLayout btnChonTinh;
+    SQLite_QuanHuyen sqLite_quanHuyen;
+
+    private boolean timPhongTro, timNhaNguyenCan, timTimOGhep; // check đánh dấu các tin cần lọc
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +87,64 @@ public class Filter extends AppCompatActivity {
         final MultiSlider multiSlider5 = (MultiSlider) findViewById(R.id.sliderArea);
         final MultiSlider multiSliderArea = (MultiSlider) findViewById(R.id.sliderArea2);
 
+        final TextView txtSoNguoiO = (TextView) findViewById(R.id.txtSoNguoi);
+        final MultiSlider sliderSoNguoiO = (MultiSlider) findViewById(R.id.sliderSoNguoi);
 
+
+        createDB();
+
+        lstChonQuanHuyen = new ArrayList<>();
+        sqLite_quanHuyen = new SQLite_QuanHuyen(getApplicationContext());
+
+        gridQuanHuyen = (ExpandableHeightGridView) findViewById(R.id.gridQuan);
+        gridQuanHuyen.setExpanded(true);
+        gridQuanHuyen.setFocusable(false);
+
+
+        checkNhaNguyenCan = (CheckBox) findViewById(R.id.checkNhaNguyenCan);
+        checkNhaTro = (CheckBox) findViewById(R.id.checkPhongTro);
+        checkTimOGhep = (CheckBox) findViewById(R.id.checkTimOGhep);
+        btnChonTinh = (LinearLayout) findViewById(R.id.lblTinh);
+        txtTPHT = (TextView) findViewById(R.id.txtTPHT);
+
+
+        Intent intent = getIntent();
+        Bundle bundle = intent.getBundleExtra("data");
+
+
+        timNhaNguyenCan = bundle.getBoolean("timNhaNguyenCan");
+        timPhongTro = bundle.getBoolean("timPhongTro");
+        timTimOGhep = bundle.getBoolean("timTimOGhep");
+
+        lstChonQuanHuyen = bundle.getIntegerArrayList("lstChonQuanHuyen");
+        sex = bundle.getBoolean("sex");
+        min = bundle.getInt("minPrice");
+        max = bundle.getInt("maxPrice");
+        tinhTP = bundle.getInt("tinhTP");
+        minArea = bundle.getInt("minArea");
+        maxArea = bundle.getInt("maxArea");
+        soNguoiO = bundle.getInt("soNguoiO");
+        tenTP = bundle.getString("tenTP");
+        ///
+
+
+        checkNhaNguyenCan.setChecked(timNhaNguyenCan);
+        checkNhaTro.setChecked(timPhongTro);
+        checkTimOGhep.setChecked(timTimOGhep);
+
+        txtTPHT.setText(tenTP); // Tên thành phố đang tìm kiếm
+
+        sliderSoNguoiO.getThumb(0).setValue(soNguoiO);
+        txtSoNguoiO.setText(String.valueOf(soNguoiO) + " người");
+
+        sliderSoNguoiO.setOnThumbValueChangeListener(new MultiSlider.OnThumbValueChangeListener() {
+            @Override
+            public void onValueChanged(MultiSlider multiSlider, MultiSlider.Thumb thumb, int thumbIndex, int value) {
+                soNguoiO = value;
+                txtSoNguoiO.setText(String.valueOf(soNguoiO) + " người");
+            }
+        });
+        ////
         multiSliderArea.getThumb(0).setValue(minArea);
         multiSliderArea.getThumb(1).setValue(maxArea);
         minValueArea.setText(String.valueOf(minArea) + " m2");
@@ -85,15 +165,8 @@ public class Filter extends AppCompatActivity {
             }
 
         });
+        //////
 
-
-
-
-        Intent intent = getIntent();
-        Bundle bundle = intent.getBundleExtra("data");
-        sex = bundle.getBoolean("sex");
-        min = bundle.getInt("minPrice");
-        max = bundle.getInt("maxPrice");
         multiSlider5.getThumb(0).setValue(min);
 
         DecimalFormat formatter = new DecimalFormat("###,###,###");
@@ -145,6 +218,7 @@ public class Filter extends AppCompatActivity {
         //ExpandableHeightGridView gridView = new ExpandableHeightGridView(this);
 
         gridFacilities.setExpanded(true);
+        gridFacilities.setFocusable(false);
 
         lstFacilities.add(new Item_Grid_Facilities("Wifi", R.drawable.icons_wi_fi, selectedFacitilies[0]));
         lstFacilities.add(new Item_Grid_Facilities("Gác", R.drawable.icons_wi_fi, selectedFacitilies[1]));
@@ -198,6 +272,48 @@ public class Filter extends AppCompatActivity {
             }
         });
 
+
+        listQuanHuyen = getDsQH(tinhTP);
+
+        for (int i = 0; i < listQuanHuyen.size(); i++) {
+            for (int j = 0; j < lstChonQuanHuyen.size(); j++) {
+                if (listQuanHuyen.get(i).getId() == lstChonQuanHuyen.get(j)) {
+                    listQuanHuyen.get(i).setSelect(true);
+                    break;
+                }
+            }
+            //listQuanHuyen.g
+        }
+
+        grid_quan_huyen_adapter = new Grid_Quan_Huyen_Adapter(getApplicationContext(), R.layout.grid_quan_huyen_item, listQuanHuyen);
+        grid_quan_huyen_adapter.notifyDataSetChanged();
+        gridQuanHuyen.setAdapter(grid_quan_huyen_adapter);
+
+        gridQuanHuyen.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+
+                boolean tmp = listQuanHuyen.get(i).isSelect();
+                if(tmp){
+                    for(int j=0;j<lstChonQuanHuyen.size();j++){
+                        if(lstChonQuanHuyen.get(j) == listQuanHuyen.get(i).getId()) {
+                            lstChonQuanHuyen.remove(j);
+                            break;
+                        }
+                    }
+
+                } else {
+                    lstChonQuanHuyen.add(listQuanHuyen.get(i).getId());
+                }
+                listQuanHuyen.get(i).setSelect(!tmp);
+                grid_quan_huyen_adapter.notifyDataSetChanged();
+
+                //selectedFacitilies[i] = !tmp;
+            }
+        });
+
+
         radNam = (RadioButton) findViewById(R.id.radNam);
         radNu = (RadioButton) findViewById(R.id.radNu);
 
@@ -234,7 +350,21 @@ public class Filter extends AppCompatActivity {
             }
         });
 
+        btnChonTinh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Toast.makeText(getApplicationContext(),"Chọn Tỉnh",Toast.LENGTH_SHORT).show();
 
+                Intent inten1 = new Intent(getApplicationContext(), ChonTinh.class);
+                Bundle bundle = new Bundle();
+
+                bundle.putInt("tinhTP", tinhTP);
+                inten1.putExtra("data", bundle);
+                startActivityForResult(inten1, 100);
+
+                //Toast.makeText(getApplicationContext(),String.valueOf(tinhTP),Toast.LENGTH_SHORT).show();
+            }
+        });
         btnOK = (TextView) findViewById(R.id.btnTimKiem);
         btnCancel = (TextView) findViewById(R.id.btnHuy);
 
@@ -248,11 +378,21 @@ public class Filter extends AppCompatActivity {
 
                 Intent intent = getIntent();
                 Bundle bundle = new Bundle();
+                bundle.putIntegerArrayList("lstChonQuanHuyen",lstChonQuanHuyen);
+                bundle.putBoolean("timNhaNguyenCan", checkNhaNguyenCan.isChecked());
+                bundle.putBoolean("timPhongTro", checkNhaTro.isChecked());
+                bundle.putBoolean("timTimOGhep", checkTimOGhep.isChecked());
+
+                bundle.putString("tenTP", tenTP);
+                bundle.putInt("soNguoiO", soNguoiO);
+                bundle.putInt("maxArea", maxArea);
+                bundle.putInt("minArea", minArea);
                 bundle.putBoolean("sex", sex);
-                bundle.putInt("minPrice",min);
-                bundle.putInt("maxPrice",max);
-                bundle.putBoolean("changeFilter",true);
-                bundle.putBooleanArray("arrFacilities",selectedFacitilies);
+                bundle.putInt("minPrice", min);
+                bundle.putInt("maxPrice", max);
+                bundle.putBoolean("changeFilter", true);
+                bundle.putBooleanArray("arrFacilities", selectedFacitilies);
+                bundle.putInt("tinhTP", tinhTP);
                 intent.putExtra("data", bundle);
                 setResult(1, intent); // phương thức này sẽ trả kết quả cho Activity1
                 finish(); // Đóng Activity hiện tại
@@ -272,5 +412,52 @@ public class Filter extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data == null) {
+            return;
+        }
+        if (requestCode == 100) {
+            Bundle bundle = data.getBundleExtra("datas");
+            tinhTP = bundle.getInt("tinhTP");
+            tenTP = bundle.getString("tenTP");
+            txtTPHT.setText(bundle.getString("tenTP"));
+            /*listQuanHuyen.clear();
+            grid_quan_huyen_adapter.notifyDataSetChanged();*/
+
+            listQuanHuyen = getDsQH(tinhTP);
+            lstChonQuanHuyen.clear();
+            //getDsQH();
+            //grid_quan_huyen_adapter.notifyDataSetChanged();
+            //gridQuanHuyen.setAdapter(grid_quan_huyen_adapter);
+
+
+            grid_quan_huyen_adapter = new Grid_Quan_Huyen_Adapter(getApplicationContext(), R.layout.grid_quan_huyen_item, listQuanHuyen);
+            grid_quan_huyen_adapter.notifyDataSetChanged();
+            gridQuanHuyen.setAdapter(grid_quan_huyen_adapter);
+
+        }
+
+    }
+
+    public ArrayList<QuanHuyen> getDsQH(int id) {
+        //Toast.makeText(getApplicationContext(),String.valueOf(tinhTP),Toast.LENGTH_SHORT).show();
+        ArrayList<QuanHuyen> data = new ArrayList<>();
+        data = sqLite_quanHuyen.getDSQH(id);
+
+        return data;
+    }
+
+    private void createDB() {
+// khởi tạo database
+        SQLiteDataController sql = new SQLiteDataController(this);
+        try {
+            sql.isCreatedDatabase();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
